@@ -16,12 +16,20 @@
 <body>
   <div class="container">
     <h1 class="text-center mb-4">¡Chistes!</h1>
-    <div class="row">
-      <div class="col-md-6 offset-md-3">
-        <button class="btn btn-primary" type="button" id="nuevoChisteBtn">Nuevo Chiste</button>
-      </div>
+    <div id="chistesCarousel" class="carousel slide" data-bs-ride="carousel">
+      <div class="carousel-inner" id="chistes"></div>
+      <button class="carousel-control-prev" type="button" data-bs-target="#chistesCarousel" data-bs-slide="prev">
+        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+        <span class="visually-hidden">Anterior</span>
+      </button>
+      <button class="carousel-control-next" type="button" data-bs-target="#chistesCarousel" data-bs-slide="next">
+        <span class="carousel-control-next-icon" aria-hidden="true"></span>
+        <span class="visually-hidden">Siguiente</span>
+      </button>
     </div>
-    <div id="chistes" class="row"></div>
+    <div class="text-center mt-3">
+      <button class="btn btn-primary" type="button" id="nuevoChisteBtn">Nuevo Chiste</button>
+    </div>
   </div>
 
   <!-- Bootstrap JS y jQuery (Necesarios para hacer la petición AJAX) -->
@@ -47,16 +55,23 @@
           chistesMostrados.push(chiste);
 
           let numeroChiste = chistesMostrados.length;
-          let nuevoChiste = `<div class="col-md-6 offset-md-3 mb-3" id="chiste-${numeroChiste}"><div class="card"><div class="card-body"><h5 class="card-title">Chiste #${numeroChiste}</h5><p class="card-text">${chiste}</p><p class="card-text"><strong>Categoría:</strong> ${categoria}</p><button class="btn btn-primary enviarBtn" data-chiste="${chiste}">Enviar</button> <button class="btn btn-danger eliminarBtn" data-numero="${numeroChiste}">Eliminar</button></div></div></div>`;
-          document.getElementById('chistes').innerHTML = nuevoChiste + document.getElementById('chistes').innerHTML;
+          let active = (numeroChiste === 1) ? 'active' : '';
+          let nuevoChiste = `<div class="carousel-item ${active}" id="chiste-${numeroChiste}"><div class="card"><div class="card-body"><h5 class="card-title">Chiste #${numeroChiste}</h5><p class="card-text">${chiste}</p><p class="card-text"><strong>Categoría:</strong> ${categoria}</p><button class="btn btn-primary enviarBtn" data-chiste="${chiste}" data-categoria="${categoria}" data-numero="${numeroChiste}">Enviar</button> <button class="btn btn-danger eliminarBtn" data-numero="${numeroChiste}">Eliminar</button></div></div></div>`;
+          document.getElementById('chistes').innerHTML += nuevoChiste;
 
           // Traducir chiste al español
           traducirChiste(chiste, numeroChiste);
 
           // Agregar evento click al botón de enviar
           $('.enviarBtn').click(function() {
+            let numeroChiste = $(this).data('numero');
             let chiste = $(this).data('chiste');
-            alert(chiste);
+            let categoria = $(this).data('categoria');
+            let traduccion = $(`#chiste-${numeroChiste} .card-text`).eq(1).text().replace('Traducción al español:', '').trim();
+            console.log("ID del Chiste:", numeroChiste);
+            console.log("Chiste:", chiste);
+            console.log("Traducción al español:", traduccion);
+            console.log("Categoría:", categoria);
           });
 
           // Agregar evento click al botón de eliminar
