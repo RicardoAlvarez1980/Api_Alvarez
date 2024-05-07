@@ -16,27 +16,14 @@ function mostrarChiste(data) {
             chistesMostrados.push(chiste);
 
             let numeroChiste = chistesMostrados.length;
-            let active = (numeroChiste === 1) ? 'active' : '';
-            let nuevoChiste = `<div class="carousel-item ${active}" id="chiste-${numeroChiste}"><div class="card"><div class="card-body"><h5 class="card-title">Chiste #${numeroChiste}</h5><p class="card-text">${chiste}</p><p class="card-text"><strong>Categoría:</strong> ${categoria}</p><button class="btn btn-primary enviarBtn" data-chiste="${chiste}" data-categoria="${categoria}" data-numero="${numeroChiste}">Enviar</button> <button class="btn btn-danger eliminarBtn" data-numero="${numeroChiste}">Eliminar</button></div></div></div>`;
+            let nuevoChiste = `<div class="col-md-6 offset-md-3 mb-3" id="chiste-${numeroChiste}"><div class="card"><div class="card-body"><h5 class="card-title">Chiste #${numeroChiste}</h5><p class="card-text">${chiste}</p><p class="card-text"><strong>Categoría:</strong> ${categoria}</p><button class="btn btn-danger eliminarBtn" data-numero="${numeroChiste}">Eliminar</button></div></div></div>`;
             document.getElementById('chistes').innerHTML += nuevoChiste;
 
             // Traducir chiste al español
             traducirChiste(chiste, numeroChiste);
 
-            // Agregar evento click al botón de enviar
-            $('.enviarBtn').click(function () {
-                let numeroChiste = $(this).data('numero');
-                let chiste = $(this).data('chiste');
-                let categoria = $(this).data('categoria');
-                let traduccion = $(`#chiste-${numeroChiste} .card-text`).eq(1).text().replace('Traducción al español:', '').trim();
-                console.log("ID del Chiste:", numeroChiste);
-                console.log("Chiste:", chiste);
-                console.log("Traducción al español:", traduccion);
-                console.log("Categoría:", categoria);
-            });
-
             // Agregar evento click al botón de eliminar
-            $('.eliminarBtn').click(function () {
+            $(document).on('click', `#chiste-${numeroChiste} .eliminarBtn`, function () {
                 let numeroChiste = $(this).data('numero');
                 eliminarChiste(numeroChiste);
             });
@@ -71,8 +58,15 @@ function mostrarTraduccion(data, numeroChiste) {
 
 // Función para eliminar un chiste
 function eliminarChiste(numeroChiste) {
-    $('#chiste-' + numeroChiste).remove();
+    $(`#chiste-${numeroChiste}`).remove();
     chistesMostrados.splice(numeroChiste - 1, 1);
+    // Actualizar números de chiste
+    $('.col-md-6').each(function (index) {
+        let numeroChiste = index + 1;
+        $(this).attr('id', `chiste-${numeroChiste}`);
+        $(this).find('.card-title').text(`Chiste #${numeroChiste}`);
+        $(this).find('.eliminarBtn').data('numero', numeroChiste);
+    });
 }
 
 // Función para obtener un nuevo chiste
