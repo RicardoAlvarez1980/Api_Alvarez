@@ -84,7 +84,10 @@
 
     // Función para mostrar la traducción del chiste
     function mostrarTraduccion(data, numeroChiste) {
-      let traduccion = data[0][0][0];
+      let traduccion = "";
+      for (let i = 0; i < data[0].length; i++) {
+        traduccion += data[0][i][0];
+      }
       if (traduccion !== undefined) {
         $(`#chiste-${numeroChiste} .card-text`).eq(0).after(`<p class="card-text"><strong>Traducción al español:</strong> ${traduccion}</p>`);
       }
